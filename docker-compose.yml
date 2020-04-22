@@ -147,6 +147,7 @@ services:
           - http_proxy
           - https_proxy
           - no_proxy
+          - SWOOLE_VERSION=${SWOOLE_VERSION}
       volumes:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
         - docker-in-docker:/certs/client
@@ -250,6 +251,7 @@ services:
           - http_proxy
           - https_proxy
           - no_proxy
+          - SWOOLE_VERSION=${SWOOLE_VERSION}
       volumes:
         - ./php-fpm/php${PHP_VERSION}.ini:/usr/local/etc/php/php.ini
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}

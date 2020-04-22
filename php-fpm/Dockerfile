@@ -270,19 +270,31 @@ RUN if [ ${INSTALL_PHPREDIS} = true ]; then \
 ###########################################################################
 
 ARG INSTALL_SWOOLE=false
+ARG SWOOLE_VERSION=4.4.0
 
 RUN if [ ${INSTALL_SWOOLE} = true ]; then \
     # Install Php Swoole Extension
-    if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
-      pecl install swoole-2.0.10; \
-    else \
-      if [ $(php -r "echo PHP_MINOR_VERSION;") = "0" ]; then \
-        pecl install swoole-2.2.0; \
-      else \
-        pecl install swoole; \
-      fi \
-    fi && \
-    docker-php-ext-enable swoole \
+    echo "Ready to install Swoole v${SWOOLE_VERSION}" \
+    && curl -L -o /tmp/swoole.tar.gz https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz \
+    && mkdir -p /tmp/swoole \
+    && tar -zxvf /tmp/swoole.tar.gz -C /tmp/swoole --strip 1 \
+    && ( \
+        cd /tmp/swoole \
+        && phpize \
+        && ./configure \
+        --enable-openssl \
+        --enable-http2 \
+#        --enable-mysqlnd \
+#        --enable-debug \
+#        --enable-debug-log \
+#        --enable-trace-log \
+        && make -j$(nproc) \
+        && make install \
+    ) \
+    && rm /tmp/swoole.tar.gz \
+    && rm -rf /tmp/swoole \
+    && echo "Swoole installed" \
+    && docker-php-ext-enable swoole \
     && php -m | grep -q 'swoole' \
 ;fi
 
