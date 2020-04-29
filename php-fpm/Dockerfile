@@ -295,7 +295,7 @@ RUN if [ ${INSTALL_SWOOLE} = true ]; then \
     && rm -rf /tmp/swoole \
     && echo "Swoole installed" \
     && docker-php-ext-enable swoole \
-    && php -m | grep -q 'swoole' \
+    && php --ri swoole \
 ;fi
 
 ###########################################################################
